@@ -1,9 +1,8 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateAppointments1600113402196
-  implements MigrationInterface {
+export default class CreateUsers1600118337128 implements MigrationInterface {
   private table = new Table({
-    name: 'appointments',
+    name: 'users',
     columns: [
       {
         name: 'id',
@@ -13,14 +12,27 @@ export default class CreateAppointments1600113402196
         default: 'uuid_generate_v4()',
       },
       {
-        name: 'provider',
+        name: 'name',
         type: 'varchar',
-        isNullable: false,
       },
       {
-        name: 'date',
-        type: 'timestamp with time zone',
-        isNullable: false,
+        name: 'email',
+        type: 'varchar',
+        isUnique: true,
+      },
+      {
+        name: 'password',
+        type: 'varchar',
+      },
+      {
+        name: 'created_at',
+        type: 'timestamptz',
+        default: 'now()',
+      },
+      {
+        name: 'updated_at',
+        type: 'timestamptz',
+        default: 'now()',
       },
     ],
   });
