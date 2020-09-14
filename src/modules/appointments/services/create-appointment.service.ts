@@ -1,6 +1,7 @@
+import { getCustomRepository } from 'typeorm';
 import { startOfHour } from 'date-fns';
 
-import Appointment from '../entities/appointment.entity';
+import Appointment from '../infra/typeorm/entities/appointment.entity';
 import AppointmentsRepository from '../repositories/appointments.repository';
 
 interface IRequest {
@@ -9,12 +10,12 @@ interface IRequest {
 }
 
 class CreateAppointmentService {
-  constructor(private appointmentsRepository: AppointmentsRepository) {}
+  public async execute({ provider, date }: IRequest): Promise<Appointment> {
+    const appointmentsRepository = getCustomRepository(AppointmentsRepository);
 
-  public execute({ provider, date }: IRequest): Appointment {
     const appointmentDate = startOfHour(date);
 
-    const appointmentInSameDate = this.appointmentsRepository.findByDate(
+    const appointmentInSameDate = await appointmentsRepository.findByDate(
       appointmentDate,
     );
 
@@ -22,10 +23,12 @@ class CreateAppointmentService {
       throw new Error('This date is unavailable');
     }
 
-    const appointment = this.appointmentsRepository.create({
+    const appointment = appointmentsRepository.create({
       provider,
       date: appointmentDate,
     });
+
+    await appointmentsRepository.save(appointment);
 
     return appointment;
   }
