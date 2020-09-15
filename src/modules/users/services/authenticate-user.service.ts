@@ -2,6 +2,8 @@ import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
+import AppError from '../../../shared/errors/app.error';
+
 import authConfig from '../../../config/auth';
 
 import User from '../infra/typeorm/entities/user.entity';
@@ -25,13 +27,13 @@ class CreateUserService {
     });
 
     if (!user) {
-      throw new Error('Wrong email or password');
+      throw new AppError('Wrong email or password', 401);
     }
 
     const passwordMatched = await compare(password, user.password);
 
     if (!passwordMatched) {
-      throw new Error('Wrong email or password');
+      throw new AppError('Wrong email or password', 401);
     }
 
     const { secret, expiresIn } = authConfig.jwt;

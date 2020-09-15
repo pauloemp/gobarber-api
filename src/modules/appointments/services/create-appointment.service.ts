@@ -1,6 +1,8 @@
 import { getCustomRepository } from 'typeorm';
 import { startOfHour } from 'date-fns';
 
+import AppError from '../../../shared/errors/app.error';
+
 import Appointment from '../infra/typeorm/entities/appointment.entity';
 import AppointmentsRepository from '../repositories/appointments.repository';
 
@@ -20,7 +22,7 @@ class CreateAppointmentService {
     );
 
     if (appointmentInSameDate) {
-      throw new Error('This date is unavailable');
+      throw new AppError('This date is unavailable');
     }
 
     const appointment = appointmentsRepository.create({

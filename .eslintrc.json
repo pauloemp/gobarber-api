@@ -27,7 +27,7 @@
       "no-useless-constructor": "off",
       "class-methods-use-this": "off",
       "@typescript-eslint/no-unused-vars": [
-        2,
+        "error",
         {
           "args": "after-used",
           "argsIgnorePattern": "^_",
