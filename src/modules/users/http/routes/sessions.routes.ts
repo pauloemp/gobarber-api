@@ -14,9 +14,9 @@ sessionsRouter.post('/', async (request, response) => {
     password,
   });
 
-  const { password: _, ...userWithouPassword } = user;
+  const { password: _, ...userWithoutPassword } = user;
 
-  return response.json({ token, userWithouPassword });
+  return response.json({ token, user: userWithoutPassword });
 });
 
 export default sessionsRouter;
