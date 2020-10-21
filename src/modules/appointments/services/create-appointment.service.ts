@@ -1,10 +1,10 @@
 import { getCustomRepository } from 'typeorm';
 import { startOfHour } from 'date-fns';
 
-import AppError from '../../../shared/errors/app.error';
+import AppError from '@shared/errors/app.error';
 
-import Appointment from '../infra/typeorm/entities/appointment.entity';
-import AppointmentsRepository from '../repositories/appointments.repository';
+import Appointment from '@modules/appointments/infra/typeorm/entities/appointment.entity';
+import AppointmentsRepository from '@modules/appointments/repositories/appointments.repository';
 
 interface IRequest {
   providerId: string;

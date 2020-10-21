@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import AppError from '../../errors/app.error';
+import AppError from '@shared/errors/app.error';
 
 function formatConsoleDate(date: Date) {
   const hour = date.getHours();

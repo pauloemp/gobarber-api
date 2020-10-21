@@ -2,11 +2,11 @@ import { getRepository } from 'typeorm';
 import path from 'path';
 import fs from 'fs';
 
-import AppError from '../../../shared/errors/app.error';
+import AppError from '@shared/errors/app.error';
 
-import uploadConfig from '../../../config/upload';
+import uploadConfig from '@config/upload';
 
-import User from '../infra/typeorm/entities/user.entity';
+import User from '@modules/users/infra/typeorm/entities/user.entity';
 
 interface IRequest {
   userId: string;
