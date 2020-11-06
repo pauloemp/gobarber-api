@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { injectable, inject } from 'tsyringe';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
@@ -7,24 +7,27 @@ import AppError from '@shared/errors/app.error';
 import authConfig from '@config/auth';
 
 import User from '@modules/users/infra/typeorm/entities/user.entity';
+import UsersRepository from '@modules/users/repositories/users.repository';
 
-interface IRequest {
+interface Request {
   email: string;
   password: string;
 }
 
-interface IResponse {
+interface Response {
   user: User;
   token: string;
 }
 
+@injectable()
 class CreateUserService {
-  public async execute({ email, password }: IRequest): Promise<IResponse> {
-    const usersRepository = getRepository(User);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: UsersRepository,
+  ) {}
 
-    const user = await usersRepository.findOne({
-      where: { email },
-    });
+  public async execute({ email, password }: Request): Promise<Response> {
+    const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {
       throw new AppError('Wrong email or password', 401);

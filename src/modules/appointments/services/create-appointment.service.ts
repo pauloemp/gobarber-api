@@ -1,4 +1,4 @@
-import { getCustomRepository } from 'typeorm';
+import { injectable, inject } from 'tsyringe';
 import { startOfHour } from 'date-fns';
 
 import AppError from '@shared/errors/app.error';
@@ -6,18 +6,22 @@ import AppError from '@shared/errors/app.error';
 import Appointment from '@modules/appointments/infra/typeorm/entities/appointment.entity';
 import AppointmentsRepository from '@modules/appointments/repositories/appointments.repository';
 
-interface IRequest {
+interface Request {
   providerId: string;
   date: Date;
 }
 
+@injectable()
 class CreateAppointmentService {
-  public async execute({ providerId, date }: IRequest): Promise<Appointment> {
-    const appointmentsRepository = getCustomRepository(AppointmentsRepository);
+  constructor(
+    @inject('AppointmentsRepository')
+    private appointmentsRepository: AppointmentsRepository,
+  ) {}
 
+  public async execute({ providerId, date }: Request): Promise<Appointment> {
     const appointmentDate = startOfHour(date);
 
-    const appointmentInSameDate = await appointmentsRepository.findByDate(
+    const appointmentInSameDate = await this.appointmentsRepository.findByDate(
       appointmentDate,
     );
 
@@ -25,12 +29,10 @@ class CreateAppointmentService {
       throw new AppError('This date is unavailable');
     }
 
-    const appointment = appointmentsRepository.create({
+    const appointment = await this.appointmentsRepository.create({
       providerId,
       date: appointmentDate,
     });
-
-    await appointmentsRepository.save(appointment);
 
     return appointment;
   }
