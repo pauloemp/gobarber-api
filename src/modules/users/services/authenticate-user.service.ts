@@ -1,6 +1,7 @@
 import { injectable, inject } from 'tsyringe';
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+
+import HashProvider from '@modules/users/providers/hash/models/hash.provider';
 
 import AppError from '@shared/errors/app.error';
 
@@ -24,6 +25,9 @@ class CreateUserService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: UsersRepository,
+
+    @inject('HashProvider')
+    private hashProvider: HashProvider,
   ) {}
 
   public async execute({ email, password }: Request): Promise<Response> {
@@ -33,7 +37,10 @@ class CreateUserService {
       throw new AppError('Wrong email or password', 401);
     }
 
-    const passwordMatched = await compare(password, user.password);
+    const passwordMatched = await this.hashProvider.compareHash(
+      password,
+      user.password,
+    );
 
     if (!passwordMatched) {
       throw new AppError('Wrong email or password', 401);
